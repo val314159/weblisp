@@ -90,7 +90,7 @@
      (defvar ws (make-websocket ""
 				(lambda (x) ((@ console log) 1 x))
 				(lambda (x) ((@ console log) 2 x))
-				(lambda (x) ((@ console log) 3 (data x)))
+				(lambda (x) ((@ console log) 3 x))
 				(lambda (x) ((@ console log) 4 x))
 				))))
 
