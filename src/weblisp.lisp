@@ -86,6 +86,14 @@
 	(setf (onmsg ws) message)
 	(setf (onerr ws) error)
 	ws))
+
+    (defun create-element (s)
+      (chain document (create-element s)))
+    (defun create-text-node (s)
+      (chain document (create-text-node s)))
+    (defun document-body ()
+      (chain document body))
+
     ))
 
 (defvar *server* (make-instance 'websocket-easy-acceptor :port *port*))
@@ -105,8 +113,11 @@
      ,@*lib*
      (defun send (s)
        ((@ ws send) s))
+     (defun output (s)
+       (push-child (create-text-node s)  (document-body))
+       (push-child (create-element "br") (document-body))
+       s)
      (defun process (s)
-       ((@ console log) "out:" s)
        (send s))
      (defun keydown (elt)
        (if (eql (code event) "Tab")
@@ -117,7 +128,8 @@
      (defvar ws (make-websocket ""
 				(lambda (x) ((@ console log) 1 x))
 				(lambda (x) ((@ console log) 2 x))
-				(lambda (x) ((@ console log) 3 "msg:" (data x)))
+				(lambda (x) ((@ console log) 3 "msg:" (data x))
+				  (output (data x)))
 				(lambda (x) ((@ console log) 4 x))
 				))))
 
